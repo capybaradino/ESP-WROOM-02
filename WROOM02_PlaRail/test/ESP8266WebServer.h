@@ -58,7 +58,7 @@ void ESP8266WebServer::handleClient()
 			exit(EXIT_FAILURE);
 		}
 
-		printf("connected from %s.\n", inet_ntoa(clitSockAddr.sin_addr));
+		printf("connected from %s.", inet_ntoa(clitSockAddr.sin_addr));
 
 //Response HTTP message
 		memset(buf, 0, sizeof(buf));
@@ -80,6 +80,7 @@ void ESP8266WebServer::handleClient()
 		vector<string> strarr = split(str, ' ');
 		string http_method = strarr[0];
 		string request_path = strarr[1];
+		cout << " HTTP method = " << http_method << ", request path = " << request_path << "\n";
 
 		//TODO send dummy header
 		::send(clitSock, buf, (int)strlen(buf), 0);
