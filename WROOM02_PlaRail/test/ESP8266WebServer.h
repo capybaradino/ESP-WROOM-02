@@ -27,7 +27,6 @@ class ESP8266WebServer
 	struct sockaddr_in clitSockAddr; //client internet socket address
 	static const unsigned short servPort = ESPWEB_PORT; //server port number
 	unsigned int clitLen; // client internet socket address length
-	char buf[ESPWEB_BUFSIZE];
 	char inbuf[ESPWEB_BUFSIZE];
 	unordered_map<string, func_void> map;
 	char method_path[ESPWEB_METHOD_PATHSIZE + 1];
@@ -49,56 +48,41 @@ ESP8266WebServer::ESP8266WebServer(int PORT)
 void ESP8266WebServer::handleClient()
 {
 	cout << "handleClient()" << "\n";
-	while(1)
+
+	clitLen = sizeof(clitSockAddr);
+	if ((clitSock = accept(servSock, (struct sockaddr *) &clitSockAddr, &clitLen)) < 0)
 	{
-		clitLen = sizeof(clitSockAddr);
-		if ((clitSock = accept(servSock, (struct sockaddr *) &clitSockAddr, &clitLen)) < 0)
-		{
-			perror("accept() failed.");
-			exit(EXIT_FAILURE);
-		}
-
-		printf("connected from %s.", inet_ntoa(clitSockAddr.sin_addr));
-
-//Response HTTP message
-		memset(buf, 0, sizeof(buf));
-		snprintf(buf, sizeof(buf),
-		"HTTP/1.0 200 OK\r\n"
-		"Content-Length: 20\r\n"
-		"Content-Type: text/html\r\n"
-		"\r\n");
-//Response HTTP message
-
-		memset(inbuf, 0, sizeof(inbuf));
-		recv(clitSock, inbuf, sizeof(inbuf), 0);
-		//printf("%s", inbuf);
-
-		//parse request message
-		memset(method_path, '\0', sizeof(method_path));
-		memcpy(method_path, inbuf, ESPWEB_METHOD_PATHSIZE);
-		string str = method_path;
-		vector<string> strarr = split(str, ' ');
-		string http_method = strarr[0];
-		string request_path = strarr[1];
-		cout << " HTTP method = " << http_method << ", request path = " << request_path << "\n";
-
-		//TODO send dummy header
-		::send(clitSock, buf, (int)strlen(buf), 0);
-
-		func_void func = map[request_path];
-		if (func == NULL) func = map[request_path + "/"];
-		if (func == NULL)
-		{
-			send(404, "text/html", "<h1>404 Not Found</h1>");
-		}
-		else
-		{
-			func();
-		}
-
-		close(clitSock);
+		perror("accept() failed.");
+		exit(EXIT_FAILURE);
 	}
-	sleep(1);
+
+	printf("connected from %s.", inet_ntoa(clitSockAddr.sin_addr));
+
+	memset(inbuf, 0, sizeof(inbuf));
+	recv(clitSock, inbuf, sizeof(inbuf), 0);
+	//printf("%s", inbuf);
+
+	//parse request message
+	memset(method_path, '\0', sizeof(method_path));
+	memcpy(method_path, inbuf, ESPWEB_METHOD_PATHSIZE);
+	string str = method_path;
+	vector<string> strarr = split(str, ' ');
+	string http_method = strarr[0];
+	string request_path = strarr[1];
+	cout << " HTTP method = " << http_method << ", request path = " << request_path << "\n";
+
+	func_void func = map[request_path];
+	if (func == NULL) func = map[request_path + "/"];
+	if (func == NULL)
+	{
+		send(404, "text/html", "<h1>404 Not Found</h1>");
+	}
+	else
+	{
+		func();
+	}
+
+	close(clitSock);
 }
 
 void ESP8266WebServer::begin()
@@ -123,6 +107,25 @@ void ESP8266WebServer::on(const char* PATH, func_void func)
 
 void ESP8266WebServer::send(int HTTP_CODE, const char* MIME_TYPE, String BODY)
 {
-	::send(clitSock, BODY.c_str(), BODY.length(), 0);
+
+//Response HTTP message
+	string str = "";
+	str += "HTTP/1.0 " + to_string(HTTP_CODE);
+	switch(HTTP_CODE)
+	{
+		case 200:
+		str += " OK"; break;
+		case 404:
+		str += " Not Found"; break;
+		default: break;
+	}
+	str += "\r\n";
+	str += "Content-Length: " + to_string(BODY.length()) + "\r\n";
+	str += "Content-Type: text/html\r\n";
+	str += "\r\n";
+	str += BODY;
+//Response HTTP message
+
+	::send(clitSock, str.c_str(), str.length(), 0);
 }
 
