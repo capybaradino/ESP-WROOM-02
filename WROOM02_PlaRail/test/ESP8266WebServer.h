@@ -2,10 +2,15 @@
 
 #include <sys/socket.h> //socket(), bind(), accept(), listen()
 #include <arpa/inet.h> // struct sockaddr_in, struct sockaddr, inet_ntoa()
+#include <unordered_map> //unordered_map(HashMap)
+typedef void (*func_void)(void);
+using namespace std;
 
 #define QUEUELIMIT 5
 #define ESPWEB_PORT 30080
 #define ESPWEB_BUFSIZE 2048
+#define ESPWEB_FUNCNUM 16
+#define ESPWEB_METHOD_PATHSIZE 20
 
 class ESP8266WebServer
 {
@@ -24,6 +29,8 @@ class ESP8266WebServer
 	unsigned int clitLen; // client internet socket address length
 	char buf[ESPWEB_BUFSIZE];
 	char inbuf[ESPWEB_BUFSIZE];
+	unordered_map<string, func_void> map;
+	char method_path[ESPWEB_METHOD_PATHSIZE + 1];
 };
 
 ESP8266WebServer::ESP8266WebServer(int PORT)
@@ -41,7 +48,7 @@ ESP8266WebServer::ESP8266WebServer(int PORT)
 
 void ESP8266WebServer::handleClient()
 {
-	std::cout << "handleClient()" << "\n";
+	cout << "handleClient()" << "\n";
 	while(1)
 	{
 		clitLen = sizeof(clitSockAddr);
@@ -59,17 +66,34 @@ void ESP8266WebServer::handleClient()
 		"HTTP/1.0 200 OK\r\n"
 		"Content-Length: 20\r\n"
 		"Content-Type: text/html\r\n"
-		"\r\n"
-		"HELLO\r\n");
+		"\r\n");
 //Response HTTP message
 
 		memset(inbuf, 0, sizeof(inbuf));
 		recv(clitSock, inbuf, sizeof(inbuf), 0);
-		//TODO parse request message
-		printf("%s", inbuf);
+		//printf("%s", inbuf);
 
-		//TODO send dummy message
+		//parse request message
+		memset(method_path, '\0', sizeof(method_path));
+		memcpy(method_path, inbuf, ESPWEB_METHOD_PATHSIZE);
+		string str = method_path;
+		vector<string> strarr = split(str, ' ');
+		string http_method = strarr[0];
+		string request_path = strarr[1];
+
+		//TODO send dummy header
 		::send(clitSock, buf, (int)strlen(buf), 0);
+
+		func_void func = map[request_path];
+		if (func == NULL) func = map[request_path + "/"];
+		if (func == NULL)
+		{
+			send(404, "text/html", "<h1>404 Not Found</h1>");
+		}
+		else
+		{
+			func();
+		}
 
 		close(clitSock);
 	}
@@ -91,11 +115,13 @@ void ESP8266WebServer::begin()
 	}
 }
 
-void ESP8266WebServer::on(const char* PATH, void (*func)(void))
+void ESP8266WebServer::on(const char* PATH, func_void func)
 {
+	map[PATH] = func;
 }
 
 void ESP8266WebServer::send(int HTTP_CODE, const char* MIME_TYPE, String BODY)
 {
+	::send(clitSock, BODY.c_str(), BODY.length(), 0);
 }
 
