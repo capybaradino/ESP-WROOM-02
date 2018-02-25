@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <stdlib.h>
 #include <unistd.h>
 
 typedef int boolean;
