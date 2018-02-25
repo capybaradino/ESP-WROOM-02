@@ -5,18 +5,64 @@
 #define OUTPUT (1)
 #define INPUT (0)
 
-void digitalWrite(int PINNO, int HIGHLOW){
+#define USEPINNUM 7
+int PinUse[USEPINNUM] = {4, 5, 12, 13, 14, 15, 16};
+int PinStatus[USEPINNUM] = {-1, -1, -1, -1, -1, -1, -1};
+
+static std::string ledStatus(int HIGHLOW)
+{
 	std::string str = "";
 	switch(HIGHLOW)
 	{
 		case HIGH:
-		str += "HIGH"; break;
+		str += "\033[1;31mHIGH\033[0m"; break;
+		//str += "HIGH"; break;
 		case LOW:
-		str += "LOW"; break;
+		str += "\033[1;34mLOW\033[0m"; break;
+		//str += "LOW"; break;
 		default:
-		str += "UNKNOWN"; break;
+		str += "\033[1;30mUNKNOWN\033[0m"; break;
+		//str += "UNKNOWN"; break;
 	}
+	return str;
+}
+
+void digitalWrite(int PINNO, int HIGHLOW){
+	std::string str = ledStatus(HIGHLOW);
 	std::cout << "[DBG] digitalWrite(" << PINNO << ", " << str << ") called\n";
+	int index = -1;
+	for(int i=0; i<USEPINNUM; i++)
+	{
+		if(PinUse[i] == PINNO)
+		{
+			index = i;
+			break;
+		}
+	}
+	if(index == -1)
+	{
+		std::cout << "[ERROR] illegal pin number => " << PINNO;
+		return;
+	}
+	PinStatus[index] = HIGHLOW;
+
+	//Print PIN Status
+	std::cout << "[DBG] ===================== Ping Status =====================\n";
+	std::cout << "[DBG] ";
+	for(int i=0; i<USEPINNUM; i++)
+	{
+		std::cout << "      " << PinUse[i];
+	}
+	std::cout << "\n[DBG] ";
+	for(int i=0; i<USEPINNUM; i++)
+	{
+		str = ledStatus(PinStatus[i]);
+		std::string indent = "";
+		for(int j=0; j<8-(str.length()-11); j++)indent += " ";
+		std::cout << indent << str;
+	}
+	std::cout << "\n[DBG] ===================== =========== =====================\n";
+	//Print PIN Status
 }
 
 void delay(int TIME){
