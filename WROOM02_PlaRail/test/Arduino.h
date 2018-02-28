@@ -5,6 +5,8 @@
 #define OUTPUT (1)
 #define INPUT (0)
 
+#define DELAY_ACCL_RATE 0.5
+
 #define USEPINNUM 7
 int PinUse[USEPINNUM] = {4, 5, 12, 13, 14, 15, 16};
 int PinStatus[USEPINNUM] = {-1, -1, -1, -1, -1, -1, -1};
@@ -67,6 +69,7 @@ void digitalWrite(int PINNO, int HIGHLOW){
 
 void delay(int TIME){
 	std::cout << "[DBG] delay(" << TIME << ") called\n";
+	usleep(TIME * 1000 * DELAY_ACCL_RATE);
 }
 
 class Serial
