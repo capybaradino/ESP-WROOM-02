@@ -1,4 +1,4 @@
 target:	main
 
 main:
-	g++ -I ./ test.cpp
+	g++ -g -I ./ test.cpp
