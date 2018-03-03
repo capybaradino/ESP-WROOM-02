@@ -17,7 +17,6 @@ void handleRoot() {
     msg += "<h1>You are connected</h1>";
     msg += "<h2><a href='/on/'>LED ON</a></h2>";
     msg += "<h2><a href='/off/'>LED OFF</a></h2>";
-    msg += "<h2><a href='/solenoid/'>SOLENOID MOVE</a></h2>";
     msg += "</body></html>";
     server.send(200, "text/html", msg);
 }
@@ -32,18 +31,9 @@ void LedOff(){
   digitalWrite(READY_LED_PIN,LOW);
 }
 
-void Solenoid(){
-  server.send(200, "text/html", "<h1>Solenoid is moved</h1>");
-  //digitalWrite(SOLENOID_PIN,HIGH);
-  //delay(SOLENOID_DELAY);
-  //digitalWrite(SOLENOID_PIN,LOW);
-}
-
 void setup() {
   pinMode(READY_LED_PIN,OUTPUT);
   digitalWrite(READY_LED_PIN,LOW);
-  //pinMode(SOLENOID_PIN,OUTPUT);
-  //digitalWrite(SOLENOID_PIN,LOW);
   delay(1000);
   Serial.begin(115200);
   Serial.println();
@@ -60,7 +50,6 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/on/", LedOn);
   server.on("/off/", LedOff);
-  server.on("/solenoid/", Solenoid);
   server.begin();
   Serial.println("HTTP server started");
 
