@@ -1,4 +1,5 @@
 #include "com.h"
+#include <signal.h>
 
 #include <sys/socket.h> //socket(), bind(), accept(), listen()
 #include <arpa/inet.h> // struct sockaddr_in, struct sockaddr, inet_ntoa()
@@ -12,6 +13,8 @@ using namespace std;
 #define ESPWEB_FUNCNUM 16
 #define ESPWEB_METHOD_PATHSIZE 20
 
+static int servSock; //server socket descripter
+
 class ESP8266WebServer
 {
 	public:
@@ -21,7 +24,6 @@ class ESP8266WebServer
 	void on(const char*, void (*func)(void));
 	void send(int, const char*, String);
 	private:
-	int servSock; //server socket descripter
 	int clitSock; //client socket descripter
 	struct sockaddr_in servSockAddr; //server internet socket address
 	struct sockaddr_in clitSockAddr; //client internet socket address
@@ -31,6 +33,15 @@ class ESP8266WebServer
 	unordered_map<string, func_void> map;
 	char method_path[ESPWEB_METHOD_PATHSIZE + 1];
 };
+
+void sig_handler(int signo)
+{
+	if (signo == SIGINT) {
+		printf("received SIGINT. close socket.\n");
+		close(servSock);
+	}
+	exit(0);
+}
 
 ESP8266WebServer::ESP8266WebServer(int PORT)
 {
@@ -97,6 +108,10 @@ void ESP8266WebServer::begin()
 	{
 		perror("listen() failed.");
 		exit(EXIT_FAILURE);
+	}
+
+	if (signal(SIGINT, sig_handler) == SIG_ERR) {
+		printf("\ncan't catch SIGUSR1\n");
 	}
 }
 
