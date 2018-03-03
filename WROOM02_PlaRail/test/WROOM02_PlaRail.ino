@@ -1,1 +1,1 @@
-../src/WROOM02_PlaRail.ino
+../WROOM02_PlaRail.ino
