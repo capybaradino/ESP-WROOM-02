@@ -15,23 +15,37 @@ void handleRoot() {
     String msg = "<html><head><title>ESP8266WebSerber</title></head>";
     msg += "<body>";
     msg += "<h1>You are connected</h1>";
-	msg += "<form action=\"/on/\" target=\"result\" name=\"form_ledon\" ></form>";
-	msg += "<form action=\"/off/\" target=\"result\" name=\"form_ledoff\" ></form>";
-	msg += "<h2><a href=\"javascript:document.form_ledon.submit()\">LED ON</a></h2>";
-	msg += "<h2><a href=\"javascript:document.form_ledoff.submit()\">LED OFF</a></h2>";
+	msg += "<form action=\"/stop/\" target=\"result\" name=\"form_stop\" ></form>";
+	msg += "<form action=\"/forw/\" target=\"result\" name=\"form_forw\" ></form>";
+	msg += "<form action=\"/forf/\" target=\"result\" name=\"form_forf\" ></form>";
+	msg += "<form action=\"/back/\" target=\"result\" name=\"form_back\" ></form>";
+	msg += "<h2><a href=\"javascript:document.form_stop.submit()\">STOP</a></h2>";
+	msg += "<h2><a href=\"javascript:document.form_forw.submit()\">MOVE FORWARD</a></h2>";
+	msg += "<h2><a href=\"javascript:document.form_forf.submit()\">MOVE FORWARD FASTER</a></h2>";
+	msg += "<h2><a href=\"javascript:document.form_back.submit()\">MOVE BACK</a></h2>";
 	msg += "<iframe src=\"\" name=\"result\"></iframe>";
     msg += "</body></html>";
     server.send(200, "text/html", msg);
 }
 
-void LedOn(){
-  server.send(200, "text/html", "<h1>LED is ON</h1>");
-  digitalWrite(READY_LED_PIN,HIGH);
+void pla_stop(){
+  server.send(200, "text/html", "<h1>STOPPED</h1>");
+	//TODO gpio control
 }
 
-void LedOff(){
-  server.send(200, "text/html", "<h1>LED is Off</h1>");
-  digitalWrite(READY_LED_PIN,LOW);
+void pla_forw(){
+  server.send(200, "text/html", "<h1>MOVE FORWARD</h1>");
+	//TODO gpio control
+}
+
+void pla_forf(){
+  server.send(200, "text/html", "<h1>MOVE FORWARD FASTER</h1>");
+	//TODO gpio control
+}
+
+void pla_back(){
+  server.send(200, "text/html", "<h1>MOVE BACK</h1>");
+	//TODO gpio control
 }
 
 void setup() {
@@ -51,8 +65,10 @@ void setup() {
   delay(3000);  //Needed for ?
 
   server.on("/", handleRoot);
-  server.on("/on/", LedOn);
-  server.on("/off/", LedOff);
+  server.on("/stop/", pla_stop);
+  server.on("/forw/", pla_forw);
+  server.on("/forf/", pla_forf);
+  server.on("/back/", pla_back);
   server.begin();
   Serial.println("HTTP server started");
 
