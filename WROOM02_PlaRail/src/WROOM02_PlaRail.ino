@@ -15,8 +15,11 @@ void handleRoot() {
     String msg = "<html><head><title>ESP8266WebSerber</title></head>";
     msg += "<body>";
     msg += "<h1>You are connected</h1>";
-    msg += "<h2><a href='/on/'>LED ON</a></h2>";
-    msg += "<h2><a href='/off/'>LED OFF</a></h2>";
+	msg += "<form action=\"/on/\" target=\"result\" name=\"form_ledon\" ></form>";
+	msg += "<form action=\"/off/\" target=\"result\" name=\"form_ledoff\" ></form>";
+	msg += "<h2><a href=\"javascript:document.form_ledon.submit()\">LED ON</a></h2>";
+	msg += "<h2><a href=\"javascript:document.form_ledoff.submit()\">LED OFF</a></h2>";
+	msg += "<iframe src=\"\" name=\"result\"></iframe>";
     msg += "</body></html>";
     server.send(200, "text/html", msg);
 }
