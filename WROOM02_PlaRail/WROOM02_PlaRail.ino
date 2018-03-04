@@ -36,15 +36,15 @@ void handleRoot() {
 
 void pla_stop(){
   server.send(200, "text/html", "<h1>STOPPED</h1>");
-	digitalWrite(MP4212_PIN_2,LOW);
-	digitalWrite(MP4212_PIN_4,LOW);
+	analogWrite(MP4212_PIN_2,0);
+	analogWrite(MP4212_PIN_4,0);
 	digitalWrite(MP4212_PIN_6,HIGH);
 	digitalWrite(MP4212_PIN_8,HIGH);
 }
 
 void pla_forw(){
   server.send(200, "text/html", "<h1>MOVE FORWARD</h1>");
-	digitalWrite(MP4212_PIN_2,LOW);
+	analogWrite(MP4212_PIN_2,0);
 	analogWrite(MP4212_PIN_4,ANALOG_MIDSPEED);
 	digitalWrite(MP4212_PIN_6,LOW);
 	digitalWrite(MP4212_PIN_8,HIGH);
@@ -52,7 +52,7 @@ void pla_forw(){
 
 void pla_forf(){
   server.send(200, "text/html", "<h1>MOVE FORWARD FASTER</h1>");
-	digitalWrite(MP4212_PIN_2,LOW);
+	analogWrite(MP4212_PIN_2,0);
 	analogWrite(MP4212_PIN_4,ANALOG_TOPSPEED);
 	digitalWrite(MP4212_PIN_6,LOW);
 	digitalWrite(MP4212_PIN_8,HIGH);
@@ -61,7 +61,7 @@ void pla_forf(){
 void pla_back(){
   server.send(200, "text/html", "<h1>MOVE BACK</h1>");
 	analogWrite(MP4212_PIN_2,ANALOG_MIDSPEED);
-	digitalWrite(MP4212_PIN_4,LOW);
+	analogWrite(MP4212_PIN_4,0);
 	digitalWrite(MP4212_PIN_6,HIGH);
 	digitalWrite(MP4212_PIN_8,LOW);
 }
@@ -72,8 +72,8 @@ void setup() {
   pinMode(MP4212_PIN_4,OUTPUT);
   pinMode(MP4212_PIN_6,OUTPUT);
   pinMode(MP4212_PIN_8,OUTPUT);
-  digitalWrite(MP4212_PIN_2,LOW);
-  digitalWrite(MP4212_PIN_4,LOW);
+  analogWrite(MP4212_PIN_2,0);
+  analogWrite(MP4212_PIN_4,0);
   digitalWrite(MP4212_PIN_6,HIGH);
   digitalWrite(MP4212_PIN_8,HIGH);
   digitalWrite(READY_LED_PIN,LOW);
