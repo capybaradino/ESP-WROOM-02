@@ -68,6 +68,14 @@ void pla_back(){
 
 void setup() {
   pinMode(READY_LED_PIN,OUTPUT);
+  pinMode(MP4212_PIN_2,OUTPUT);
+  pinMode(MP4212_PIN_4,OUTPUT);
+  pinMode(MP4212_PIN_6,OUTPUT);
+  pinMode(MP4212_PIN_8,OUTPUT);
+  digitalWrite(MP4212_PIN_2,LOW);
+  digitalWrite(MP4212_PIN_4,LOW);
+  digitalWrite(MP4212_PIN_6,HIGH);
+  digitalWrite(MP4212_PIN_8,HIGH);
   digitalWrite(READY_LED_PIN,LOW);
   delay(1000);
   Serial.begin(115200);
