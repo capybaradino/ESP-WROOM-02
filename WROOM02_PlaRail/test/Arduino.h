@@ -23,15 +23,29 @@ static std::string ledStatus(int HIGHLOW)
 		str += "\033[1;34mLOW\033[0m"; break;
 		//str += "LOW"; break;
 		default:
-		str += "\033[1;30mUNKNOWN\033[0m"; break;
+		if(HIGHLOW > 0){
+			str += "\033[1;30m" + std::to_string(HIGHLOW) + "\033[0m"; break;
+		}else{
+			str += "\033[1;30mUNKNOWN\033[0m"; break;
+		}
 		//str += "UNKNOWN"; break;
 	}
 	return str;
 }
 
-void digitalWrite(int PINNO, int HIGHLOW){
+#define MODE_DEGITAL 1
+#define MODE_ANALOG 2
+
+void digianaWrite(int PINNO, int HIGHLOW, int mode){
 	std::string str = ledStatus(HIGHLOW);
-	std::cout << "[DBG] digitalWrite(" << PINNO << ", " << str << ") called\n";
+	if(mode == MODE_DEGITAL){
+		std::cout << "[DBG] digitalWrite(" << PINNO << ", " << str << ") called\n";
+	}else if(mode == MODE_ANALOG){
+		std::cout << "[DBG] analogWrite(" << PINNO << ", " << str << ") called\n";
+	}else{
+		std::cout << "[ERROR] Error illegal mode => " << mode << "\n";
+		exit(1);
+	}
 	int index = -1;
 	for(int i=0; i<USEPINNUM; i++)
 	{
@@ -43,8 +57,8 @@ void digitalWrite(int PINNO, int HIGHLOW){
 	}
 	if(index == -1)
 	{
-		std::cout << "[ERROR] illegal pin number => " << PINNO;
-		return;
+		std::cout << "[ERROR] illegal pin number => " << PINNO << "\n";
+		exit(1);
 	}
 	PinStatus[index] = HIGHLOW;
 
@@ -65,6 +79,14 @@ void digitalWrite(int PINNO, int HIGHLOW){
 	}
 	std::cout << "\n[DBG] ===================== =========== =====================\n";
 	//Print PIN Status
+}
+
+void digitalWrite(int PINNO, int HIGHLOW){
+	digianaWrite(PINNO, HIGHLOW, MODE_DEGITAL);
+}
+
+void analogWrite(int PINNO, int RATE){
+	digianaWrite(PINNO, RATE, MODE_ANALOG);
 }
 
 void delay(int TIME){
