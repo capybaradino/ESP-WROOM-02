@@ -6,15 +6,21 @@
 
 ESP8266WebServer server(80);
 
-#define READY_LED_PIN 16
-
+#define READY_LED_PIN 12
 #define LEDDELAY_WHEN_CONNECTED 250
+
+#define MP4212_PIN_2 14
+#define MP4212_PIN_4 16
+#define MP4212_PIN_6 5
+#define MP4212_PIN_8 4
+#define ANALOG_MIDSPEED 80
+#define ANALOG_TOPSPEED 128
 
 
 void handleRoot() {
-    String msg = "<html><head><title>ESP8266WebSerber</title></head>";
-    msg += "<body>";
-    msg += "<h1>You are connected</h1>";
+	String msg = "<html><head><title>ESP8266WebSerber</title></head>";
+	msg += "<body>";
+	msg += "<h1>You are connected</h1>";
 	msg += "<form action=\"/stop/\" target=\"result\" name=\"form_stop\" ></form>";
 	msg += "<form action=\"/forw/\" target=\"result\" name=\"form_forw\" ></form>";
 	msg += "<form action=\"/forf/\" target=\"result\" name=\"form_forf\" ></form>";
@@ -24,28 +30,40 @@ void handleRoot() {
 	msg += "<h2><a href=\"javascript:document.form_forf.submit()\">MOVE FORWARD FASTER</a></h2>";
 	msg += "<h2><a href=\"javascript:document.form_back.submit()\">MOVE BACK</a></h2>";
 	msg += "<iframe src=\"\" name=\"result\"></iframe>";
-    msg += "</body></html>";
-    server.send(200, "text/html", msg);
+	msg += "</body></html>";
+	server.send(200, "text/html", msg);
 }
 
 void pla_stop(){
   server.send(200, "text/html", "<h1>STOPPED</h1>");
-	//TODO gpio control
+	digitalWrite(MP4212_PIN_2,LOW);
+	digitalWrite(MP4212_PIN_4,LOW);
+	digitalWrite(MP4212_PIN_6,HIGH);
+	digitalWrite(MP4212_PIN_8,HIGH);
 }
 
 void pla_forw(){
   server.send(200, "text/html", "<h1>MOVE FORWARD</h1>");
-	//TODO gpio control
+	digitalWrite(MP4212_PIN_2,LOW);
+	analogWrite(MP4212_PIN_4,ANALOG_MIDSPEED);
+	digitalWrite(MP4212_PIN_6,LOW);
+	digitalWrite(MP4212_PIN_8,HIGH);
 }
 
 void pla_forf(){
   server.send(200, "text/html", "<h1>MOVE FORWARD FASTER</h1>");
-	//TODO gpio control
+	digitalWrite(MP4212_PIN_2,LOW);
+	analogWrite(MP4212_PIN_4,ANALOG_TOPSPEED);
+	digitalWrite(MP4212_PIN_6,LOW);
+	digitalWrite(MP4212_PIN_8,HIGH);
 }
 
 void pla_back(){
   server.send(200, "text/html", "<h1>MOVE BACK</h1>");
-	//TODO gpio control
+	analogWrite(MP4212_PIN_2,ANALOG_MIDSPEED);
+	digitalWrite(MP4212_PIN_4,LOW);
+	digitalWrite(MP4212_PIN_6,HIGH);
+	digitalWrite(MP4212_PIN_8,LOW);
 }
 
 void setup() {
