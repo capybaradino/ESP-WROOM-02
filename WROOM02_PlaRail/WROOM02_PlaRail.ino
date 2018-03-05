@@ -16,6 +16,8 @@ ESP8266WebServer server(80);
 #define ANALOG_MIDSPEED 800
 #define ANALOG_TOPSPEED 850
 
+#define USE_ANALOG_2_4
+#define USE_ANALOG_6_8
 
 void handleRoot() {
 	String msg = "<html><head><title>ESP8266WebSerber</title></head>";
@@ -35,69 +37,99 @@ void handleRoot() {
 }
 
 void pla_stop(){
-  server.send(200, "text/html", "<h1>STOPPED</h1>");
+	server.send(200, "text/html", "<h1>STOPPED</h1>");
+#ifdef USE_ANALOG_2_4
 	analogWrite(MP4212_PIN_2,0);
 	analogWrite(MP4212_PIN_4,0);
-//  digitalWrite(MP4212_PIN_2,LOW);
-//  digitalWrite(MP4212_PIN_4,LOW);
-//  digitalWrite(MP4212_PIN_6,HIGH);
-//  digitalWrite(MP4212_PIN_8,HIGH);
-  analogWrite(MP4212_PIN_6,1023);
-  analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_2,LOW);
+	digitalWrite(MP4212_PIN_4,LOW);
+#endif
+#ifdef USE_ANALOG_6_8
+	analogWrite(MP4212_PIN_6,1023);
+	analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_6,HIGH);
+	digitalWrite(MP4212_PIN_8,HIGH);
+#endif
 }
 
 void pla_forw(){
-  server.send(200, "text/html", "<h1>MOVE FORWARD</h1>");
+	server.send(200, "text/html", "<h1>MOVE FORWARD</h1>");
+#ifdef USE_ANALOG_2_4
 	analogWrite(MP4212_PIN_2,0);
 	analogWrite(MP4212_PIN_4,ANALOG_MIDSPEED);
-//  digitalWrite(MP4212_PIN_2,LOW);
-//  digitalWrite(MP4212_PIN_4,HIGH);
-//  digitalWrite(MP4212_PIN_6,LOW);
-//  digitalWrite(MP4212_PIN_8,HIGH);
-  analogWrite(MP4212_PIN_6,1023-ANALOG_MIDSPEED);
-  analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_2,LOW);
+	digitalWrite(MP4212_PIN_4,HIGH);
+#endif
+#ifdef USE_ANALOG_6_8
+	analogWrite(MP4212_PIN_6,1023-ANALOG_MIDSPEED);
+	analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_6,LOW);
+	digitalWrite(MP4212_PIN_8,HIGH);
+#endif
 }
 
 void pla_forf(){
-  server.send(200, "text/html", "<h1>MOVE FORWARD FASTER</h1>");
+	server.send(200, "text/html", "<h1>MOVE FORWARD FASTER</h1>");
+#ifdef USE_ANALOG_2_4
 	analogWrite(MP4212_PIN_2,0);
 	analogWrite(MP4212_PIN_4,ANALOG_TOPSPEED);
-//  digitalWrite(MP4212_PIN_2,LOW);
-//  digitalWrite(MP4212_PIN_4,HIGH);
-//  digitalWrite(MP4212_PIN_6,LOW);
-//  digitalWrite(MP4212_PIN_8,HIGH);
-  analogWrite(MP4212_PIN_6,1023-ANALOG_TOPSPEED);
-  analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_2,LOW);
+	digitalWrite(MP4212_PIN_4,HIGH);
+#endif
+#ifdef USE_ANALOG_6_8
+	analogWrite(MP4212_PIN_6,1023-ANALOG_TOPSPEED);
+	analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_6,LOW);
+	digitalWrite(MP4212_PIN_8,HIGH);
+#endif
 }
 
 void pla_back(){
-  server.send(200, "text/html", "<h1>MOVE BACK</h1>");
+	server.send(200, "text/html", "<h1>MOVE BACK</h1>");
+#ifdef USE_ANALOG_2_4
 	analogWrite(MP4212_PIN_2,ANALOG_MIDSPEED);
 	analogWrite(MP4212_PIN_4,0);
-//	digitalWrite(MP4212_PIN_2,HIGH);
-//	digitalWrite(MP4212_PIN_4,LOW);
-//  digitalWrite(MP4212_PIN_6,HIGH);
-//  digitalWrite(MP4212_PIN_8,LOW);
-  analogWrite(MP4212_PIN_6,1023);
-  analogWrite(MP4212_PIN_8,1023-ANALOG_MIDSPEED);
+#else
+	digitalWrite(MP4212_PIN_2,HIGH);
+	digitalWrite(MP4212_PIN_4,LOW);
+#endif
+#ifdef USE_ANALOG_6_8
+	analogWrite(MP4212_PIN_6,1023);
+	analogWrite(MP4212_PIN_8,1023-ANALOG_MIDSPEED);
+#else
+	digitalWrite(MP4212_PIN_6,HIGH);
+	digitalWrite(MP4212_PIN_8,LOW);
+#endif
 }
 
 void setup() {
   pinMode(READY_LED_PIN,OUTPUT);
   digitalWrite(READY_LED_PIN,LOW);
 
-  pinMode(MP4212_PIN_2,OUTPUT);
-  pinMode(MP4212_PIN_4,OUTPUT);
-  pinMode(MP4212_PIN_6,OUTPUT);
-  pinMode(MP4212_PIN_8,OUTPUT);
-  analogWrite(MP4212_PIN_2,0);
-  analogWrite(MP4212_PIN_4,0);
-//  digitalWrite(MP4212_PIN_2,LOW);
-//  digitalWrite(MP4212_PIN_4,LOW);
-//  digitalWrite(MP4212_PIN_6,HIGH);
-//  digitalWrite(MP4212_PIN_8,HIGH);
-  analogWrite(MP4212_PIN_6,1023);
-  analogWrite(MP4212_PIN_8,1023);
+	pinMode(MP4212_PIN_2,OUTPUT);
+	pinMode(MP4212_PIN_4,OUTPUT);
+	pinMode(MP4212_PIN_6,OUTPUT);
+	pinMode(MP4212_PIN_8,OUTPUT);
+#ifdef USE_ANALOG_2_4
+	analogWrite(MP4212_PIN_2,0);
+	analogWrite(MP4212_PIN_4,0);
+#else
+	digitalWrite(MP4212_PIN_2,LOW);
+	digitalWrite(MP4212_PIN_4,LOW);
+#endif
+#ifdef USE_ANALOG_6_8
+	analogWrite(MP4212_PIN_6,1023);
+	analogWrite(MP4212_PIN_8,1023);
+#else
+	digitalWrite(MP4212_PIN_6,HIGH);
+	digitalWrite(MP4212_PIN_8,HIGH);
+#endif
 
   delay(1000);
   Serial.begin(115200);
