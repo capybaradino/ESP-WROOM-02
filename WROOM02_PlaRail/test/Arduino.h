@@ -1,7 +1,7 @@
 #include "com.h"
 
-#define HIGH (1)
-#define LOW (0)
+#define HIGH (3001)
+#define LOW (3000)
 #define OUTPUT (1)
 #define INPUT (0)
 
@@ -23,7 +23,7 @@ static std::string ledStatus(int HIGHLOW)
 		str += "\033[1;34mLOW\033[0m"; break;
 		//str += "LOW"; break;
 		default:
-		if(HIGHLOW > 0){
+		if(HIGHLOW >= 0 && HIGHLOW <= 1023){
 			str += "\033[1;30m" + std::to_string(HIGHLOW) + "\033[0m"; break;
 		}else{
 			str += "\033[1;30mUNKNOWN\033[0m"; break;
