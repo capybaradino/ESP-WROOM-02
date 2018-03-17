@@ -23,6 +23,16 @@ void handleRoot() {
 	String msg = "<html><head><title>ESP8266WebSerber</title></head>";
 	msg += "<body>";
 	msg += "<h1>You are connected</h1>";
+#ifdef USE_ANALOG_2_4
+  msg += "<h2>USE_ANALOG_2_4 ON " + String(ANALOG_MIDSPEED) + "/" + String(ANALOG_TOPSPEED) + "</h2>";
+#else
+  msg += "<h2>USE_ANALOG_2_4 OFF"</h2>";
+#endif
+#ifdef USE_ANALOG_6_8
+  msg += "<h2>USE_ANALOG_6_8 ON " + String(ANALOG_MIDSPEED) + "/" + String(ANALOG_TOPSPEED) + "</h2>";
+#else
+  msg += "<h2>USE_ANALOG_6_8 OFF</h2>";
+#endif
 	msg += "<form action=\"/stop/\" target=\"result\" name=\"form_stop\" ></form>";
 	msg += "<form action=\"/forw/\" target=\"result\" name=\"form_forw\" ></form>";
 	msg += "<form action=\"/forf/\" target=\"result\" name=\"form_forf\" ></form>";
