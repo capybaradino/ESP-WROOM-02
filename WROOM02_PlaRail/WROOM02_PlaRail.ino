@@ -6,10 +6,10 @@
 
 ESP8266WebServer server(80);
 
-#define READY_LED_PIN 12
+#define READY_LED_PIN 14
 #define LEDDELAY_WHEN_CONNECTED 250
 
-#define MP4212_PIN_2 14
+#define MP4212_PIN_2 13
 #define MP4212_PIN_4 16
 #define MP4212_PIN_6 5
 #define MP4212_PIN_8 4
