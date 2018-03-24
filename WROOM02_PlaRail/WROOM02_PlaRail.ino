@@ -26,7 +26,7 @@ void handleRoot() {
 #ifdef USE_ANALOG_2_4
   msg += "<h2>USE_ANALOG_2_4 ON " + String(ANALOG_MIDSPEED) + "/" + String(ANALOG_TOPSPEED) + "</h2>";
 #else
-  msg += "<h2>USE_ANALOG_2_4 OFF"</h2>";
+  msg += "<h2>USE_ANALOG_2_4 OFF</h2>";
 #endif
 #ifdef USE_ANALOG_6_8
   msg += "<h2>USE_ANALOG_6_8 ON " + String(ANALOG_MIDSPEED) + "/" + String(ANALOG_TOPSPEED) + "</h2>";
