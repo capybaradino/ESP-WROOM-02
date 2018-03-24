@@ -8,6 +8,7 @@
 
 typedef int boolean;
 typedef std::string String;
+#define String(str) (std::to_string(str))
 
 #include <vector>
 #include <sstream>      // std::ostringstream
