@@ -7,9 +7,12 @@
 
 #define DELAY_ACCL_RATE 0.5
 
-#define USEPINNUM 7
-int PinUse[USEPINNUM] = {4, 5, 12, 13, 14, 15, 16};
-int PinStatus[USEPINNUM] = {-1, -1, -1, -1, -1, -1, -1};
+//#define USEPINNUM 7
+//int PinUse[USEPINNUM] = {4, 5, 12, 13, 14, 15, 16};
+////int PinStatus[USEPINNUM] = {-1, -1, -1, -1, -1, -1, -1};
+#define USEPINNUM 5
+int PinUse[USEPINNUM] = {13, 16, 5, 4, 14};
+int PinStatus[USEPINNUM] = {-1, -1, -1, -1, -1};
 
 static std::string ledStatus(int HIGHLOW)
 {
