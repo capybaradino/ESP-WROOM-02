@@ -37,7 +37,7 @@ class ESP8266WebServer
 void sig_handler(int signo)
 {
 	if (signo == SIGINT) {
-		printf("received SIGINT. close socket.\n");
+		printf("[DBG] received SIGINT. close socket.\n");
 		close(servSock);
 	}
 	exit(0);
@@ -58,7 +58,7 @@ ESP8266WebServer::ESP8266WebServer(int PORT)
 
 void ESP8266WebServer::handleClient()
 {
-	cout << "handleClient()" << "\n";
+	cout << "[DBG] handleClient()" << "\n";
 
 	clitLen = sizeof(clitSockAddr);
 	if ((clitSock = accept(servSock, (struct sockaddr *) &clitSockAddr, &clitLen)) < 0)
