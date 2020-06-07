@@ -8,25 +8,36 @@ ESP8266WebServer server(80);
 
 #define READY_LED_PIN 14
 #define LEDDELAY_WHEN_CONNECTED 250
+#define RBPI_RESET_PIN 16
 
 void handleRoot() {
 	String msg = "<html><head><title>ESP8266WebSerber</title></head>";
 	msg += "<body>";
 	msg += "<h1>You are connected</h1>";
-	msg += "<form action=\"/stop/\" target=\"result\" name=\"form_stop\" ></form>";
-	msg += "<h2><a href=\"javascript:document.form_stop.submit()\">STOP</a></h2>";
+	msg += "<form action=\"/pson/\" target=\"result\" name=\"form_pson\" ></form>";
+	msg += "<h2><a href=\"javascript:document.form_pson.submit()\">PSON</a></h2>";
 	msg += "<iframe src=\"\" name=\"result\"></iframe>";
 	msg += "</body></html>";
 	server.send(200, "text/html", msg);
 }
 
-void pla_stop(){
-	server.send(200, "text/html", "<h1>STOPPED</h1>");
+void rbpi_pson(){
+	server.send(200, "text/html", "<h1>Powering on</h1>");
+	digitalWrite(RBPI_RESET_PIN,LOW);
+	delay(1000);
+	digitalWrite(RBPI_RESET_PIN,HIGH);
 }
 
 void setup() {
   pinMode(READY_LED_PIN,OUTPUT);
   digitalWrite(READY_LED_PIN,LOW);
+  pinMode(RBPI_RESET_PIN,OUTPUT);
+  digitalWrite(RBPI_RESET_PIN,HIGH);
+
+  Serial.print("ssid=");
+  Serial.println(ssid);
+  Serial.print("ssid password=");
+  Serial.println(password);
 
   delay(1000);
   Serial.begin(115200);
@@ -42,7 +53,7 @@ void setup() {
   delay(3000);  //Needed for ?
 
   server.on("/", handleRoot);
-  server.on("/stop/", pla_stop);
+  server.on("/pson/", rbpi_pson);
   server.begin();
   Serial.println("HTTP server started");
 
@@ -67,7 +78,5 @@ void loop() {
     Serial.println(WiFi.localIP());
     isConnected=true;
   }
-  Serial.println("test");
-  delay(1000);
 }
 
